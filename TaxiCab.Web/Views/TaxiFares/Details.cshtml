@@ -1,0 +1,98 @@
+﻿@model TaxiCab.Web.Models.TaxiFare
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TaxiFare</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartAt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartAt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndAt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndAt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MilesLess6mph)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MilesLess6mph)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeLess6mph)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeLess6mph)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeInNoMotion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeInNoMotion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeMore6mph)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeMore6mph)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NewYorkTax)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NewYorkTax)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Total)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Total)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
