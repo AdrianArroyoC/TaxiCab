@@ -17,7 +17,7 @@ namespace TaxiCab.Web.Controllers
         // GET: TaxiFares
         public ActionResult Index()
         {
-            return View(db.TaxiFares.ToList());
+            return View("Index", db.TaxiFares.ToList());
         }
 
         // GET: TaxiFares/Details/5
@@ -32,31 +32,28 @@ namespace TaxiCab.Web.Controllers
             {
                 return HttpNotFound();
             }
-            return View(taxiFare);
+            return View("Details", taxiFare);
         }
 
         // GET: TaxiFares/Create
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: TaxiFares/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Date,Time,StartAt,EndAt,MilesLess6mph,TimeLess6mph,TimeInNoMotion,TimeMore6mph,NewYorkTax,Total")] TaxiFare taxiFare)
         {
             if (ModelState.IsValid)
             {
-                taxiFare.Total = Total(taxiFare);
                 db.TaxiFares.Add(taxiFare);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(taxiFare);
+            return View("Create", taxiFare);
         }
 
         // GET: TaxiFares/Edit/5
@@ -71,24 +68,21 @@ namespace TaxiCab.Web.Controllers
             {
                 return HttpNotFound();
             }
-            return View(taxiFare);
+            return View("Edit", taxiFare);
         }
 
         // POST: TaxiFares/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Date,Time,StartAt,EndAt,MilesLess6mph,TimeLess6mph,TimeInNoMotion,TimeMore6mph,NewYorkTax,Total")] TaxiFare taxiFare)
         {
             if (ModelState.IsValid)
             {
-                taxiFare.Total = Total(taxiFare);
                 db.Entry(taxiFare).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(taxiFare);
+            return View("Edit", taxiFare);
         }
 
         // GET: TaxiFares/Delete/5
@@ -103,7 +97,7 @@ namespace TaxiCab.Web.Controllers
             {
                 return HttpNotFound();
             }
-            return View(taxiFare);
+            return View("Delete", taxiFare);
         }
 
         // POST: TaxiFares/Delete/5
@@ -124,76 +118,6 @@ namespace TaxiCab.Web.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private float Total(TaxiFare taxiFare)
-        {
-            float total = 3.0f;
-            int timeCovered = taxiFare.TimeInNoMotion + taxiFare.TimeMore6mph;
-            TimeSpan startTime = taxiFare.Time;
-            TimeSpan endTime = EndTime(startTime, +taxiFare.TimeLess6mph + timeCovered);
-            if (!taxiFare.Date.DayOfWeek.Equals(DayOfWeek.Saturday) && !taxiFare.Date.DayOfWeek.Equals(DayOfWeek.Sunday))
-            {
-                if (IntoHours(startTime, endTime, new TimeSpan(16, 0, 0), new TimeSpan(20, 0, 0)))
-                {
-                    total += 1.0f;
-                }
-            }
-            if (IntoHours(startTime, endTime, new TimeSpan(20, 0, 0), new TimeSpan(23, 59, 0)))
-            {
-                total += 0.5f;
-            }
-            else if (IntoHours(startTime, endTime, new TimeSpan(0, 0, 0), new TimeSpan(6, 0, 0)))
-            {
-                total += 0.5f;
-            }
-            total += (taxiFare.MilesLess6mph * 5 * 0.35f);
-            total += (timeCovered * 0.35f);
-            if (taxiFare.NewYorkTax)
-            {
-                total += 0.5f;
-            }
-            return total;
-        }
-
-        private TimeSpan EndTime(TimeSpan startTime, int time)
-        {
-            int hours = startTime.Hours;
-            int minutes = 0;
-            if (time > 60)
-            {
-                hours += (time / 60);
-                minutes = time % 60;
-            }
-            else
-            {
-                minutes = time;
-            }
-            minutes += startTime.Minutes;
-            if (minutes > 60)
-            {
-                hours++;
-                minutes %= 60;
-            }
-            if (hours > 23)
-            {
-                hours -= 24;
-            }
-            return new TimeSpan(hours, minutes, 0);
-        }
-
-        private bool IntoHours(TimeSpan startTime, TimeSpan endTime, TimeSpan startLimit, TimeSpan endLimit)
-        {
-            bool into = false;
-            if (startTime >= startLimit && startTime <= endLimit)
-            {
-                into = true;
-            }
-            if (endTime >= startLimit && endTime <= endLimit)
-            {
-                into = true;
-            }
-            return into;
         }
     }
 }
